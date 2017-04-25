@@ -11,6 +11,7 @@ sparkler.model.app = Backbone.Model.extend({
 		idvars: [],
 		dataset: {},
 		selected: [],
+		seltable: "",
 		mode: "load"
 	},
 	render: function() {

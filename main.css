@@ -1,3 +1,45 @@
+body {
+	font-family: 'IBM Plex Sans', sans-serif;
+	margin: 9px;
+}
+.header {
+	overflow: hidden;
+	background-color: #9D6EAF;
+	margin: -9px -9px 0 -9px;
+	padding: 9px 27px;
+	vertical-align: middle;
+}
+.header h1 {
+	color: white;
+	margin: .2em 0;
+	display: inline;
+}
+.header .tagline {
+	color: rgb(194, 173, 207);
+	font-style: italic;
+}
+.header a {
+	float: left;
+	color: white;
+	text-align: center;
+	padding: 12px;
+	text-decoration: none;
+	font-size: 18px; 
+	line-height: 25px;
+	border-radius: 4px;
+ }
+.header a:hover {
+	background-color: rgb(194, 173, 207);
+	color: black;
+}
+.header a.active {
+	background-color: white;
+	color: black;
+}
+.header-right {
+	float: right;
+}
+
 .plotpanel {
 	float: left;
 	margin: 10px;

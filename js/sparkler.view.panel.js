@@ -262,6 +262,7 @@ sparkler.view.panel = Backbone.View.extend({
 				clickable: true,
 				grouplevel: i,
 				color: gcolors[i],
+				highlightColor: "red",
 				label: (gvals && gvals.levels) ? gvals.levels[i] : null,
 				points: {show: true}
 			}

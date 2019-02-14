@@ -23,7 +23,8 @@ sparkler.model.app = Backbone.Model.extend({
 			this.view.on("datareceived", this.dataReceived, this);
 			this.view.render();
 		} else if(this.get("mode")=="loading") {
-			this.view.$el.append("<img src='loading.gif'/>");
+			this.view.$el.append("<h4>Loading...</h4>");
+			this.view.$el.append("<img class='loading' src='loading.gif'/>");
 		} else if(this.get("mode")=="view") {
 			this.view = new sparkler.view.app({model:this});
 			this.view.render();
@@ -91,12 +92,15 @@ sparkler.model.app = Backbone.Model.extend({
 	dataReceived: function(msg) {
 		this.view.off("datareceived");
 		if(msg.data) {
-			var result = this.parseTextData(msg.data);
-			if(result.data) {
-				this.dataLoaded(result);
-			} else {
-				this.dataFailed(result);
-			}
+			this.dataLoading();
+			setTimeout((function() {
+				var result = this.parseTextData(msg.data);
+				if(result.data) {
+					this.dataLoaded(result);
+				} else {
+					this.dataFailed(result);
+				}
+			}).bind(this))
 		}
 	},
 	dataLoading: function() {

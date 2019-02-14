@@ -44,6 +44,9 @@ section.about {
 	max-width: 30em;
 	margin: 0px auto;
 }
+img.loading {
+	margin: 10px auto;
+}
 
 .plotpanel {
 	float: left;

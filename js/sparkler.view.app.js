@@ -7,10 +7,23 @@ sparkler.view.app = Backbone.View.extend({
 		this.model.on("paneladd", this.insertPanel, this);
 		this.model.on("change:selected", this.updateSelection, this);
 		this.model.on("change:seltable", this.updateSelectionSummary, this);
+		this.model.on('change:pointsize change:pointfilled change:pointalpha', this.updateControls, this);
 	},
 	render: function() {
 		this.$add = $("<button class='addpanel'>add panel</button>");
-		this.$el.append($("<div>").addClass("ctrlbar").append(this.$add));
+		this.$pointsize = $("<select>").addClass("pointsize").append(
+			$("<option>").val("2").text("size=2"),
+			$("<option>").val("4").text("size=4"),
+			$("<option>").val("6").text("size=6"));
+		this.$pointfilled = $("<select>").addClass("pointfilled").append(
+			$("<option>").val("false").text("White Center"),
+			$("<option>").val("true").text("Filled Center"));
+		this.$pointalpha = $("<select>").addClass("pointalpha").append(
+			$("<option>").val("1.0").text("alpha=1.0"),
+			$("<option>").val("0.5").text("alpha=0.5"),
+			$("<option>").val("0.2").text("alpha=0.2"));
+		this.$el.append($("<div>").addClass("ctrlbar").append(this.$add, this.$pointsize,
+			this.$pointfilled, this.$pointalpha));
 		this.$pc = $("<div>").addClass("panelcontainer");
 		this.$el.append(this.$pc);
 		this.$selinfo = $("<div>").addClass("selinfo").text(" ");
@@ -26,12 +39,16 @@ sparkler.view.app = Backbone.View.extend({
 			this.$el.append($("<div>").append(this.$tablulateselect))
 		}
 		this.updateSelection();
+		this.updateControls();
 		return this;
 	},
 	events: {
 		"click .addpanel" : "requestAdditionalPanel",
 		"click .dumpselected" : "dumpSelection",
 		"change .seltabulate" : "changeTabulate",
+		"change .pointsize" : "changePlotStyle",
+		"change .pointfilled" : "changePlotStyle",
+		"change .pointalpha" : "changePlotStyle",
 	},
 	requestAdditionalPanel: function() {
 		this.model.addPanel();
@@ -79,11 +96,21 @@ sparkler.view.app = Backbone.View.extend({
 			this.$selsummary.append("<table>" + rows + "</table>")
 		}
 	},
+	updateControls: function() {
+		this.$pointsize.val(this.model.get("pointsize").toFixed(0))
+		this.$pointfilled.val(this.model.get("pointfilled").toString());
+		this.$pointalpha.val(this.model.get("pointalpha").toFixed(1));
+	},
 	changeTabulate: function(e) {
 	    var field = $(e.currentTarget);
 		var value = $("option:selected", field).val();
 		this.model.set("seltable", value)
 		console.log(value);
+	},
+	changePlotStyle: function(e) {
+		this.model.set("pointsize", parseInt($("option:selected", this.$pointsize).val()));
+		this.model.set("pointfilled", $("option:selected", this.$pointfilled).val()=="true");
+		this.model.set("pointalpha", parseFloat($("option:selected", this.$pointalpha).val()));
 	},
 	dumpSelection: function() {
 		var selids = this.model.get("selected"); 

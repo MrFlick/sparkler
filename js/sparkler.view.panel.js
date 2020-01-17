@@ -7,11 +7,12 @@ sparkler.view.panel = Backbone.View.extend({
 	initialize: function() {
 		this.app = this.options.app;
 		this.app.on('change:selected', this.updateSelection, this);
+		this.app.on('change:pointsize change:pointfilled change:pointalpha', this.updateControls, this);
 		this.model.on('change:xvar change:yvar change:groupvar', this.updateControls, this);
 		this.model.on('destroy', this.remove, this);
 		this.shapers = {
-			"scatter": this.shapeScatterPlot,
-			"density": this.shapeDensityPlot
+			"scatter": this.shapeScatterPlot.bind(this),
+			"density": this.shapeDensityPlot.bind(this)
 		};
 		this.redrawData = _.debounce(this.rawRedrawData, 50);
 		this.justselected = false;
@@ -256,7 +257,20 @@ sparkler.view.panel = Backbone.View.extend({
 				}
 			}
 		}
+		
+		var pointAlpha = this.app.get("pointalpha");
+		var pointFilled = this.app.get("pointfilled");
+		var pointSize = this.app.get("pointsize");
 		for(var i=0; i<ngroups; i++) {
+			var pointOpts = {show: true, radius: pointSize};
+			if (pointAlpha < 1) {
+				var c = $.color.parse(gcolors[i]);
+				c.a = pointAlpha;
+				gcolors[i] = c.toString();
+			}
+			if (pointFilled) {
+				pointOpts.fillColor = gcolors[i];
+			}
 			series[gorder[i]] = {
 				data: [],
 				clickable: true,
@@ -264,7 +278,10 @@ sparkler.view.panel = Backbone.View.extend({
 				color: gcolors[i],
 				highlightColor: "red",
 				label: (gvals && gvals.levels) ? gvals.levels[i] : null,
-				points: {show: true}
+				points: pointOpts,
+			}
+			if (pointAlpha < 1) {
+				series[gorder[i]].shadowSize = 0;
 			}
 			decode[gorder[i]]=[];
 		}

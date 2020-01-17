@@ -12,7 +12,10 @@ sparkler.model.app = Backbone.Model.extend({
 		dataset: {},
 		selected: [],
 		seltable: "",
-		mode: "load"
+		mode: "load",
+		pointsize: 4,
+		pointfilled: false,
+		pointalpha: 1,
 	},
 	render: function() {
 		if(this.view) {
